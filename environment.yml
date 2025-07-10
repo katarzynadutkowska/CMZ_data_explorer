@@ -1,4 +1,4 @@
-name: cmz_apps
+name: cmz_app
 channels:
   - conda-forge
   - defaults
