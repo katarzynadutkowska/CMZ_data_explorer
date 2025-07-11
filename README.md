@@ -21,7 +21,7 @@ A lightweight Dash app for interactively exploring astrochemical model outputs (
 git clone https://github.com/YOUR_USERNAME/CMZ-data-explorer.git
 cd CMZ-data-explorer
 ```
-![[assets/Zip-file.png]]
+![How to save a zip file with the repository](./assets/Zip-file.png]]
 ### 2. Define Your Paths
 
 Edit `config.py` and replace all instances of `YOUR_ABSOLUTE_PATH` with the full paths to your local files. You will need to set:
