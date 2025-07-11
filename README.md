@@ -54,10 +54,13 @@ conda activate YOUR_ENV_NAME  # Replace with the name defined in environment.yml
 Once everything is configured:
 
 ```
-python app.py
+python Shocks.py
 ```
-
-The app will be available at `http://127.0.0.1:8050/` by default.
+or 
+```
+python Protostellar_objets.py
+```
+The app will be available at `http://127.0.0.1:8050/` by default, but should always work with `http://localhost:8050/`. To leave the app just press `CTRL+C` in the terminal, where the app is running.
 
 ---
 
@@ -67,7 +70,7 @@ The app will be available at `http://127.0.0.1:8050/` by default.
 codes/
 │
 ├── Protostellar_objets.py  # Dash app for protostellar object models
-├── Shock.py                # Dash app for shock models
+├── Shocks.py                # Dash app for shock models
 ├── config.py               # All paths and global constants
 ├── environment.yml         # Conda environment spec
 ├── data_extraction.py      # Parses raw HDF5 grid data

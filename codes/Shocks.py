@@ -709,4 +709,4 @@ def update_ratio_plot(selected_df, numerator, denominator, selected_zeta, select
 
 # Run the server
 if __name__ == "__main__":
-    app.run_server(host='0.0.0.0', debug=True)
+    app.run_server(host='127.0.0.1', port='8050', debug=True)
