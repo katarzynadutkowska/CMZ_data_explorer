@@ -47,10 +47,10 @@ grid_path = f"/absolute/path/to/{grid_name}"
 ### 3. Set Up the Environment
 
 There is included a ready-to-use Conda environment file.
-
-```
+Replace `YOUR_ENV_NAME` with the name defined in environment.yml - default is **cmz_app**
+```bash
 conda env create -f environment.yml
-conda activate YOUR_ENV_NAME  # Replace with the name defined in environment.yml - default is cmz_app
+conda activate YOUR_ENV_NAME  
 ```
 
 ### 4. Launch the App
