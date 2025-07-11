@@ -28,18 +28,18 @@ Alternatively, just download the zip through the **Code** button on the top of t
 
 ### 2. Define Your Paths
 
-Edit `config.py` and replace all instances of `YOUR_ABSOLUTE_PATH` with the full paths to your local files. You will need to set:
+Once you have all the files you need, edit `config.py` and replace all instances of `/absolute/path/to` with the full paths to your local files. You will need to set:
 
-- Pickle files:
+- Pickle files (REQUIRED):
 
-```
+```python
 hotcore_pkl = "/absolute/path/to/hotcore.pkl"
 cshock_pkl  = "/absolute/path/to/cshock.pkl"
 ```
 
-- Grid file (optional if you have pickle files already):
+- Grid file (OPTIONAL **if** you have pickle files already):
 
-```
+```python
 grid_name = 'your_grid_name.h5'
 grid_path = f"/absolute/path/to/{grid_name}"
 ```
