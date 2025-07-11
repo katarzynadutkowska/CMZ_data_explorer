@@ -65,6 +65,7 @@ To stop the app, press `CTRL+C` in the terminal where it's running.
 
 When you're done working with the app, you can deactivate the environment with:
 `conda deactivate`
+
 ---
 
 ## 📁 Project Structure
