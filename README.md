@@ -60,8 +60,11 @@ or
 ```
 python Protostellar_objets.py
 ```
-The app will be available at `http://127.0.0.1:8050/` by default, but should always work with `http://localhost:8050/`. To leave the app just press `CTRL+C` in the terminal, where the app is running.
+The app will be available at `http://127.0.0.1:8050/` by default, but `http://localhost:8050/` should also work reliably.  
+To stop the app, press `CTRL+C` in the terminal where it's running.  
 
+When you're done working with the app, you can deactivate the environment with:
+`conda deactivate`
 ---
 
 ## 📁 Project Structure
