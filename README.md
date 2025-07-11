@@ -74,7 +74,7 @@ When you're done working with the app, you can deactivate the environment with:
 codes/
 │
 ├── Protostellar_objets.py  # Dash app for protostellar object models
-├── Shocks.py                # Dash app for shock models
+├── Shocks.py               # Dash app for shock models
 ├── config.py               # All paths and global constants
 ├── environment.yml         # Conda environment spec
 ├── data_extraction.py      # Parses raw HDF5 grid data
