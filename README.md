@@ -15,13 +15,17 @@ A lightweight Dash app for interactively exploring astrochemical model outputs (
 
 ## 📦 Getting Started
 
-### 1. Clone the Repository or Download the zip file with the code
+### 1. Clone the Repository or Download the Zip of the Repository
 
-```
+Here's how to clone:
+
+```bash
 git clone https://github.com/YOUR_USERNAME/CMZ-data-explorer.git
 cd CMZ-data-explorer
 ```
+You can download the zip through the **Code** button on the top of the repository, like so:  
 ![How to save a zip file with the repository](./assets/Zip-file.png)
+
 ### 2. Define Your Paths
 
 Edit `config.py` and replace all instances of `YOUR_ABSOLUTE_PATH` with the full paths to your local files. You will need to set:
