@@ -23,7 +23,7 @@ Here's how to clone:
 git clone https://github.com/YOUR_USERNAME/CMZ-data-explorer.git
 cd CMZ-data-explorer
 ```
-You can download the zip through the **Code** button on the top of the repository, like so:  
+Alternatively, just download the zip through the **Code** button on the top of the repository, like so: 
 ![How to save a zip file with the repository](./assets/Zip-file.png)
 
 ### 2. Define Your Paths
