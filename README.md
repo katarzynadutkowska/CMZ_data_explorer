@@ -64,17 +64,19 @@ The app will be available at `http://127.0.0.1:8050/` by default.
 ## 📁 Project Structure
 
 ```
-CMZ-data-explorer/
+codes/
 │
-├── app.py                # Dash app main entry point
-├── config.py             # All paths and global constants
-├── environment.yml       # Conda environment spec
-├── data_extraction.py    # Parses raw HDF5 grid data
-├── functionality.py      # Core model processing and molecule formatting
-├── assets/               # Dash styling
-└── ...
+├── Protostellar_objets.py  # Dash app for protostellar object models
+├── Shock.py                # Dash app for shock models
+├── config.py               # All paths and global constants
+├── environment.yml         # Conda environment spec
+├── data_extraction.py      # Parses raw HDF5 grid data
+├── functionality.py        # Core model processing and molecule formatting
+ assets/ 
+│
+├── custom_style.css        # Dash styling
+├── uclchem_transparent.png # UCLCHEM's logo
 ```
-
 ---
 
 ## ⚠️ Notes
