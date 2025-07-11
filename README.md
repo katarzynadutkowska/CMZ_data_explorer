@@ -33,7 +33,7 @@ hotcore_pkl = "/absolute/path/to/hotcore.pkl"
 cshock_pkl  = "/absolute/path/to/cshock.pkl"
 ```
 
-- Grid file:
+- Grid file (optional if you have pickle files already):
 
 ```
 grid_name = 'your_grid_name.h5'
