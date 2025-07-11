@@ -60,7 +60,7 @@ or
 ```
 python Protostellar_objets.py
 ```
-The app will be available at `http://127.0.0.1:8050/` by default, but `http://localhost:8050/` should also work reliably.  
+The app will be available via a browser at `http://127.0.0.1:8050/` by default, but `http://localhost:8050/` should also work reliably.  
 To stop the app, press `CTRL+C` in the terminal where it's running.  
 
 When you're done working with the app, you can deactivate the environment with:
