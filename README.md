@@ -93,7 +93,7 @@ codes/
 
 ## ⚠️ Notes
 
-- You must have access to the full grid file (HDF5 format) and/or the preprocessed `.pkl` files. These are not included in the repository. The full grid is available via [Zenodo](https://doi.org/10.5281/zenodo.1567494) and was described in Dutkowska+submitted. For .pkl files contact me directly: dutkowska **at** strw.leidenuniv.nl
+- You must have access to the full grid file (HDF5 format) and/or the preprocessed `.pkl` files. These are not included in the repository. The full grid is available via [Zenodo](https://doi.org/10.5281/zenodo.1567494) and was described in [Dutkowska+2025](https://ui.adsabs.harvard.edu/abs/2025arXiv250810759D/abstract). For .pkl files contact me directly: dutkowska **at** strw.leidenuniv.nl
 - If you need to regenerate `.pkl` files, make sure `grid_path` is correctly set.
 - Supported UCLCHEM models: **hotcore**, **cshock**
 
@@ -101,7 +101,7 @@ codes/
 
 ## 📚 Acknowledgments
 
-If you use this tool for your research, please consider citing the underlying chemical modeling work and providing attribution in your paper or code.
+If you use this tool for your research, please consider citing the underlying chemical modeling work, to respect the work put into creating it.
 
 ---
 
