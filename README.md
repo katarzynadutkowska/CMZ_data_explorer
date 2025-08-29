@@ -74,6 +74,9 @@ To stop the app, press `CTRL+C` in the terminal where it's running.
 When you're done working with the app, you can deactivate the environment with:
 `conda deactivate`
 
+Below is an example of the app in use when one species is plotted:
+![Working app example](./codes/assets/Working-app.png)
+
 ---
 
 ## 📁 Project Structure
@@ -82,6 +85,8 @@ When you're done working with the app, you can deactivate the environment with:
 codes/
 ├── assets/ 
 │   ├── custom_style.css        # Dash styling
+│   ├── Zip-file.png            # An image used in README.md
+│   ├── Working-app.png         # An image used in README.md 
 │   └── uclchem_transparent.png # UCLCHEM's logo
 ├── Protostellar_objets.py  # Dash app for protostellar object models
 ├── Shocks.py               # Dash app for shock models
