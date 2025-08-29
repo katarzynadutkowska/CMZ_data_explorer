@@ -46,11 +46,12 @@ grid_path = f"/absolute/path/to/{grid_name}"
 
 ### 3. Set Up the Environment
 
-There is included a ready-to-use Conda environment file.
-Replace `YOUR_ENV_NAME` with the name defined in environment.yml - default is **cmz_app**
+Replace `YOUR_ENV_NAME` with how your preffered (e.g., `cmz_app`). Please, **DO NOT FORGET** to *activate* your conda environment before installing anything (see below).
 ```bash
-conda env create -f environment.yml
+conda create -n YOUR_ENV_NAME python=3.12
 conda activate YOUR_ENV_NAME  
+pip install dash
+pip install pandas
 ```
 
 ### 4. Launch the App

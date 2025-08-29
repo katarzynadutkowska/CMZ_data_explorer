@@ -1,0 +1,56 @@
+/* General styling for body text */
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    color: #333333;
+    background-color: #ffffff;
+}
+
+/* Style for headings */
+h1, h2 {
+    font-family: 'Open Sans', sans-serif;
+    color: #1E0E3F;
+}
+
+h3, h4, h5, h6 {
+    font-family: 'Open Sans', sans-serif;
+    color: #504D57;
+}
+/* Style for paragraphs */
+p {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    color: #34495e;
+}
+
+/* Custom styling for dropdowns */
+.dropdown, .Select-control {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    color: #1E0E3F;
+}
+
+/* Styling for dropdown options */
+.Select-option {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    color: #1E0E3F;
+}
+
+/* Custom styling for checklists */
+.dash-checklist label {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    color: #34495e;
+}
+
+/* Custom styling for the dropdown container */
+.dash-dropdown .Select-menu-outer {
+    background-color: #f9f9f9;
+}
+
+/* Optional: Add hover effects */
+.Select-option.is-focused {
+    background-color: #e6e6e6;
+    color: #000000;
+}

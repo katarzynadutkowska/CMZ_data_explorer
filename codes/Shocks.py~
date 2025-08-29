@@ -280,7 +280,7 @@ app.layout = html.Div(
             ]
             )]),
         html.Img(
-            src="/assets/uclchem_transparent.png",
+            src="./assets/uclchem_transparent.png",
             style={
                 "position": "absolute",
                 "top": "10px",

@@ -5,8 +5,8 @@
 # It is essential to **set the absolute paths correctly**
 
 # Define the absolute paths for the input pickle files
-hotcore_pkl = "/Users/kasia/Postdoc/30_Projects/33_ACES/33.03 - Scripts/pkl_files/hotcore.pkl"
-cshock_pkl  = "/Users/kasia/Postdoc/30_Projects/33_ACES/33.03 - Scripts/pkl_files/cshock.pkl"
+hotcore_pkl = "YOUR_ABSOLUTE_PATH/hotcore.pkl"
+cshock_pkl  = "YOUR_ABSOLUTE_PATH/cshock.pkl"
 
 ZETA_SCALE_FACTOR   = 1.310e-17 # Scale factor for zeta values: the data is presented as ZETA/ZETA_0, where ZETA_0 = 1.310e-17
 DEFAULT_MARKER_SIZE = 12        # Default marker size for the scatter plot - but it is also adjustable in the visualization

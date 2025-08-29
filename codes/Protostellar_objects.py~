@@ -1,4 +1,4 @@
-# File: CMZ_data_explorer/Shocks.py
+# File: CMZ_data_explorer/Protostellar_objects.py
 # -*- coding: utf-8 -*-
 
 # Import necessary libraries
@@ -9,32 +9,37 @@ from dash import html
 from dash import dash_table
 import plotly.express as px
 import numpy as np
-from functionality import format_molecule_HTML,ranges_cshock, mol_all_gas, mol_all_bulk, mol_all_surface
+from functionality import format_molecule_HTML,ranges_hotcore, mol_all_gas, mol_all_bulk, mol_all_surface
 import datetime
+from pathlib import Path
 from config import *
 
 # Read the master dataframe from a pickle file
 try:
-    with open(cshock_pkl, 'rb') as file:
-        cshock_df_pkl = pickle.load(file)
+    with open(hotcore_pkl, 'rb') as file:
+        hotcore_df_pkl = pickle.load(file)
 except FileNotFoundError:
     pass
 
-# Find the position of the 'zeta' column
-zeta_index = cshock_df_pkl.columns.get_loc('zeta')
-# Insert 'zeta_scaled' right after the 'zeta' column - this way it is more intuitive to read
-cshock_df_pkl.insert(zeta_index + 1, 'zeta_scaled', 1.310 * 1e-17 * cshock_df_pkl['zeta'])
+root_folder = Path(__file__).resolve().parents[1]
+root_folder_str = str(root_folder)
 
-# Divide the master DataFrame into segments - increases the speed of the application
-shock_df = cshock_df_pkl[cshock_df_pkl['stage']=='shock'].reset_index(drop=True)
-postshock_df = cshock_df_pkl[cshock_df_pkl['stage']=='post-shock'].reset_index(drop=True)
+# Find the position of the 'zeta' column
+zeta_index = hotcore_df_pkl.columns.get_loc('zeta')
+# Insert 'zeta_scaled' right after the 'zeta' column - this way it is more intuitive to read
+hotcore_df_pkl.insert(zeta_index + 1, 'zeta_scaled', 1.310 * 1e-17 * hotcore_df_pkl['zeta'])
+
+# Filter the dataframe for warm-up and hotcore stages
+warmp_up_df = hotcore_df_pkl[hotcore_df_pkl['stage'] == 'warmup'].reset_index(drop=True)
+hotcore_df  = hotcore_df_pkl[hotcore_df_pkl['stage'] == 'hotcore'].reset_index(drop=True)
 
 # Read the available values - for the dropdown and filtering purposes
-zeta_available        = ranges_cshock["zeta"]
-vel_available         = ranges_cshock["shock_vel"]
-dens_available        = ranges_cshock["initialDens"]
-rad_available         = ranges_cshock["radfield"]
-initialTemp_available = ranges_cshock["initialTemp"]
+zeta_available        = ranges_hotcore["zeta"]
+final_temp_available  = ranges_hotcore["final_temp"]
+dens_available        = ranges_hotcore["initialDens"]
+rad_available         = ranges_hotcore["radfield"]
+initialTemp_available = ranges_hotcore["initialTemp"]
+rad_parent_available  = hotcore_df_pkl["cloud_radfield"].unique()
 
 # Initialize the Dash app
 app = dash.Dash(__name__)
@@ -42,22 +47,21 @@ app = dash.Dash(__name__)
 # Define the Dash layout
 app.layout = html.Div(
     [
-        html.H1("Shock Data Explorer 🔎"),
-        html.P("Welcome to the interactive shock data explorer! This tool provides access to the shock grid tailored to environments similar to the Galactic Center. " \
+        html.H1("Protostellar Object Data Explorer 🔎"),
+        html.P("Welcome to the interactive protostellar object data explorer! This tool provides access to the protostellar object grid tailored to environments similar to the Galactic Center. " \
                "The models utilized the UCLCHEM gas-grain chemical code and are thoroughly described in Dutkowska et al. 2025."),
         html.Div([
             html.H3("What you can do with this tool:", style={"margin-top": "20px", "margin-bottom": "10px"}),
             html.Ul([
-                html.Li("🔍 Explore shock and post-shock data interactively through visualizations and tables"),
+                html.Li("🔍 Explore warm-up and fully-warmed-up data interactively through visualizations and tables"),
                 html.Li("📊 Create custom plots to analyze chemical evolution over time"),
                 html.Li("🔽 Download filtered datasets as CSV files for your own analysis"),
-                html.Li("⚙️ Filter by shock velocity, density, medium's temperature, cosmic ray rates, and FUV fields"),
+                html.Li("⚙️ Filter by object's temperature and density, medium's temperature, cosmic ray rates, and FUV fields"),
                 html.Li("💾 Save plots and visualizations for presentations or publications")
             ], style={"margin-bottom": "15px"})
         ]),
         html.P("This tool makes complex chemical models accessible and explorable. No prior experience with the UCLCHEM models is required!"),
         html.Hr(style={"margin": "20px 0"}),
-        
         html.Div(
             [  # Start of the two-column layout
                 # Left Column
@@ -156,45 +160,63 @@ app.layout = html.Div(
                         html.Div(id="species-validation-message", style={"color": "red", "margin-bottom": "10px"}),
                     ],
                     style={
-                        "width": "48%",
+                        "width": "29%",
                         "display": "inline-block",
                         "vertical-align": "top",
                     },
                 ),
                 # Right Column
                 html.Div(
-                    [   
-                        html.H2("Shock-data of interest"),
-                        html.H3("Shock stage"),
+                    [
+                    html.H2("Object properties"),
+                        html.H3("Stage"),
                         dcc.Dropdown(
                             id="df-dropdown-type",
                             options=[
-                                {"label": "Shock", "value": "shock"},
-                                {"label": "Post-shock", "value": "postshock"},
+                                {"label": "Warm-up (T < T_final)", "value": "warmup"},
+                                {"label": "Fully-warmed-up protostellar object (T = T_final)", "value": "hotcore"},
                             ],
-                            value="shock",
+                            value="hotcore",
                         ),
-                        html.H3("Shock velocity [km s⁻¹] "),
+                        html.H3(["Mass [M", html.Sub("⊙"), "]"]),
                         dcc.Dropdown(
-                            id="df-dropdown-shockvel",
+                            id="df-dropdown-mass",
                             options=[
-                                {"label": f"{shock_vel}", "value": shock_vel}
-                                for shock_vel in vel_available
+                                {"label": "10", "value": 3},
+                                {"label": "25", "value": 5}
                             ],
-                            value=[vel_available[0]],
+                            value=[3],
                             multi=True,
                         ),
-                        html.H2("Medium properties"),
-                        html.H3("Density [cm⁻³]"),
+                        html.H3("Temperature [K] "),
+                        dcc.Dropdown(
+                            id="df-dropdown-finaltemp",
+                            options=[
+                                {"label": f"{final_temp}", "value": final_temp}
+                                for final_temp in final_temp_available
+                            ],
+                            value=[final_temp_available[0]],
+                            multi=True,
+                        ),
+                        html.H3(["Density [cm", html.Sup("-3"), "]"]),
                         dcc.Dropdown(
                             id="df-dropdown-dens",
                             options=[
                                 {"label": f"{dens:.0e}", "value": dens}
                                 for dens in dens_available
                             ],
-                            value=[dens_available[0]],
+                            value=[dens_available[1]],
                             multi=True,
                         ),
+                    ],
+                    style={
+                        "width": "29%",
+                        "display": "inline-block",
+                        "vertical-align": "top",
+                    },
+                ),
+            html.Div(
+                    [                            html.H2("Medium properties"),
                         html.H3("Initial temperature [K]"),
                         dcc.Dropdown(
                             id="df-dropdown-initialtemp",
@@ -205,8 +227,7 @@ app.layout = html.Div(
                             value=[initialTemp_available[0]],
                             multi=True
                         ),
-
-                        html.H3("Cosmic Ray Ionization Rate [s⁻¹]"),
+                        html.H3(["Cosmic Ray Ionization Rate [s", html.Sup("-1"), "]"]),
                         dcc.Dropdown(
                             id="df-dropdown-zeta",
                             options=[
@@ -226,13 +247,24 @@ app.layout = html.Div(
                             value=[rad_available[0]],
                             multi=True,
                         ),
+                        html.H3("FUV field of the natal cloud [Habing]"),
+                        dcc.Dropdown(
+                            id="df-dropdown-rad-parent",
+                            options=[
+                                {"label": f"{rad_parent:.0e}", "value": rad_parent}
+                                for rad_parent in rad_parent_available
+                            ],
+                            value=[rad_parent_available[0]],
+                            multi=True,
+                        ),
                     ],
                     style={
-                        "width": "48%",
+                        "width": "29%",
                         "display": "inline-block",
                         "vertical-align": "top",
                     },
                 ),
+                
             ],
             style={"display": "flex", "justify-content": "space-between"},
         ),  # End of the two-column layout
@@ -280,7 +312,7 @@ app.layout = html.Div(
             ]
             )]),
         html.Img(
-            src="/assets/uclchem_transparent.png",
+            src=root_folder_str+"/assets/uclchem_transparent.png",
             style={
                 "position": "absolute",
                 "top": "10px",
@@ -313,30 +345,34 @@ app.layout = html.Div(
         dash.Input("df-dropdown-surface-species", "value"),
         dash.Input("df-dropdown-bulk-species", "value"),
         dash.Input("df-dropdown-zeta", "value"),
-        dash.Input("df-dropdown-shockvel", "value"),
+        dash.Input("df-dropdown-finaltemp", "value"),
         dash.Input("df-dropdown-dens", "value"),
         dash.Input("df-dropdown-rad", "value"),
         dash.Input("df-dropdown-initialtemp", "value"),
+        dash.Input("df-dropdown-mass", "value"),
+        dash.Input("df-dropdown-rad-parent", "value"),
         dash.Input("btn_csv", "n_clicks"),
         dash.Input("y-axis-scale", "value"),
         dash.Input("marker-size-slider", "value"),
         dash.Input("show-grid", "value"),
-    ],
+    ]
 )
-
 def update_output(
     selected_df,
     selected_gas_species,
     selected_surface_species,
     selected_bulk_species,
     selected_zeta,
-    selected_velocity,
+    selected_finaltemp,
     selected_dens,
     selected_rad,
     selected_temp,
+    selected_mass,
+    selected_rad_parent,
     n_clicks,
     y_scale, marker_size, show_grid
 ):
+    
     # Combine all selected species
     selected_species = []
     if selected_gas_species:
@@ -345,7 +381,6 @@ def update_output(
         selected_species.extend(selected_surface_species)
     if selected_bulk_species:
         selected_species.extend(selected_bulk_species)
-    
     # Validation: Check if at least one species is selected
     if not selected_species:
         validation_message = "⚠️ Please select at least one species from any category."
@@ -356,41 +391,43 @@ def update_output(
     # Clear validation message if species are selected
     validation_message = ""
     
-    # Rest of your existing filtering logic remains the same
-    if selected_df == "shock":
-        df = shock_df[
-            (shock_df["zeta"].isin(selected_zeta))
-            & (shock_df["shock_vel"].isin(selected_velocity))
-            & (shock_df["initialDens"].isin(selected_dens))
-            & (shock_df["radfield"].isin(selected_rad))
-            & (shock_df["initialTemp"].isin(selected_temp))
+    if selected_df == "warmup":
+        df =   warmp_up_df[
+              (warmp_up_df["zeta"].isin(selected_zeta))
+            & (warmp_up_df["final_temp"].isin(selected_finaltemp))
+            & (warmp_up_df["initialDens"].isin(selected_dens))
+            & (warmp_up_df["radfield"].isin(selected_rad))
+            & (warmp_up_df["initialTemp"].isin(selected_temp))
+            & (warmp_up_df["index"].isin(selected_mass))
+            & (warmp_up_df["cloud_radfield"].isin(selected_rad_parent))
         ]
     else:
-        df = postshock_df[
-            (postshock_df["zeta"].isin(selected_zeta))
-            & (postshock_df["shock_vel"].isin(selected_velocity))
-            & (postshock_df["initialDens"].isin(selected_dens))
-            & (postshock_df["radfield"].isin(selected_rad))
-            & (postshock_df["initialTemp"].isin(selected_temp))
+        df =   hotcore_df[
+              (hotcore_df["zeta"].isin(selected_zeta))
+            & (hotcore_df["final_temp"].isin(selected_finaltemp))
+            & (hotcore_df["initialDens"].isin(selected_dens))
+            & (hotcore_df["radfield"].isin(selected_rad))
+            & (hotcore_df["initialTemp"].isin(selected_temp))
+            & (hotcore_df["index"].isin(selected_mass))
+            & (hotcore_df["cloud_radfield"].isin(selected_rad_parent))
         ]
-
-    # Filter columns to include only selected species
+    # Summary of the selected dataframe
     df_filtered = df[
-        [
-            "age",
-            "locDens",
-            "locTemp",
-            "Av",
-            "run_id",
-            "shock_vel",
-            "initialDens",
-            "initialTemp",
-            "zeta_scaled",
-            "radfield",
-        ]
-        + selected_species  # This now contains species from all three categories
+                    [
+                        "age",
+                        "locDens",
+                        "locTemp",
+                        "Av",
+                        "run_id",
+                        "initialTemp",
+                        "final_temp",
+                        "zeta_scaled",
+                        "radfield",
+                        "cloud_radfield",
+                        "index",
+                    ]
+                    + selected_species
     ]
-
     summary = html.Div(
         [
             html.H3(" Head of the chosen data"),
@@ -415,6 +452,7 @@ def update_output(
             ),
         ]
     )
+
     # Example plot (change columns as needed)
     fig = px.scatter(
         df, 
@@ -426,24 +464,24 @@ def update_output(
         hover_data={
             'age': True, 
             'locDens': True, 
-            'initialDens': True, 
-            'locTemp': True, 
+            'locTemp': True,
             'initialTemp': True, 
-            'shock_vel': True, 
-            'zeta_scaled': True, 
-            'radfield': True
+            'index': True,
+            'zeta_scaled': True,
+            'radfield': True,
+            'cloud_radfield': True,
         },
         labels={
             'variable': 'Species', 
             'value': 'X(species)', 
             'age': 'Time', 
             'locDens': 'n<sub>H</sub>', 
-            'initialDens': 'n<sub>H, initial</sub>', 
             'locTemp': 'T', 
-            'initialTemp': 'T<sub>init</sub>', 
-            'shock_vel': 'v<sub>s</sub>', 
+            'initialTemp': 'T<sub>init</sub>',
+            'index' : 'Mass index',
             'zeta': 'CRIR', 
-            'radfield': 'FUV'
+            'radfield': 'FUV',
+            'cloud_radfield': 'FUV<sub>parent cloud</sub>',
         },
     )
     # Ensure you have enough traces for the number of species
@@ -451,7 +489,7 @@ def update_output(
     num_species = len(selected_species)
 
     for i in range(min(num_traces, num_species)):
-        fig.data[i].name = format_molecule_HTML(selected_species[i].replace("log_", ""))
+        fig.data[i].name = format_molecule_HTML(selected_species[i])
 
     # Set alpha for face and edge of scatter points and increase marker size
     fig.update_traces(
@@ -466,12 +504,12 @@ def update_output(
         'Abundance: %{y:.2e}<br>' +
         'Time: %{x:.2e} yr<br>' +
         'n<sub>H</sub>: %{customdata[0]:.2e}<br>' +
-        'n<sub>H, initial</sub>: %{customdata[1]:.0e}<br>' +
-        'T: %{customdata[2]:.2f}<br>' +
-        'T<sub>init</sub>: %{customdata[3]}<br>' +
-        'v<sub>s</sub>: %{customdata[4]}<br>' +
-        'CRIR: %{customdata[5]:.2e}<br>' +
-        'FUV: %{customdata[6]:.0e}<br>'
+        'T %{customdata[1]:.2f}<br>' +
+        'T<sub>init</sub>: %{customdata[2]}<br>' +
+        'Mass index: %{customdata[3]:.0f}<br>' +
+        'CRIR: %{customdata[4]:.2e}<br>' +
+        'FUV: %{customdata[5]:.0e}<br>' +
+        'FUV<sub>parent cloud</sub>: %{customdata[6]:.0e}<br>' 
     ),
     )
 
@@ -518,7 +556,7 @@ def update_output(
     fig.update_traces(showlegend=False, selector=dict(type="box"))
 
     current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    download_data = dcc.send_data_frame(df_filtered.to_csv, f"Shock_model_{current_time}.csv") if n_clicks else dash.no_update
+    download_data = dcc.send_data_frame(df_filtered.to_csv, f"PO_model_{current_time}.csv") if n_clicks else dash.no_update
     return summary, fig, download_data, validation_message
 
 # Callback 1: Show/hide ratio controls based on checkbox
@@ -573,18 +611,20 @@ def update_ratio_dropdown_options(gas_species, surface_species, bulk_species):
         dash.Input("ratio-numerator-dropdown", "value"),
         dash.Input("ratio-denominator-dropdown", "value"),
         dash.Input("df-dropdown-zeta", "value"),
-        dash.Input("df-dropdown-shockvel", "value"),
+        dash.Input("df-dropdown-finaltemp", "value"),
         dash.Input("df-dropdown-dens", "value"),
         dash.Input("df-dropdown-rad", "value"),
         dash.Input("df-dropdown-initialtemp", "value"),
+        dash.Input("df-dropdown-mass", "value"),
+        dash.Input("df-dropdown-rad-parent", "value"),
         dash.Input("enable-ratio-plot", "value"),
         dash.Input("y-axis-scale", "value"),
         dash.Input("marker-size-slider", "value"),
         dash.Input("show-grid", "value"),
     ]
 )
-def update_ratio_plot(selected_df, numerator, denominator, selected_zeta, selected_velocity, 
-                     selected_dens, selected_rad, selected_temp, ratio_enabled, y_scale, marker_size, show_grid):
+def update_ratio_plot(selected_df, numerator, denominator, selected_zeta, selected_finaltemp, 
+                     selected_dens, selected_rad, selected_temp, selected_mass, selected_rad_parent, ratio_enabled, y_scale, marker_size, show_grid):
     
     # If ratio plotting is not enabled, return empty figure
     if "enabled" not in ratio_enabled:
@@ -603,27 +643,31 @@ def update_ratio_plot(selected_df, numerator, denominator, selected_zeta, select
     validation_msg = ""
     
     # Filter data (same logic as your main plot)
-    if selected_df == "shock":
-        df = shock_df[
-            (shock_df["zeta"].isin(selected_zeta))
-            & (shock_df["shock_vel"].isin(selected_velocity))
-            & (shock_df["initialDens"].isin(selected_dens))
-            & (shock_df["radfield"].isin(selected_rad))
-            & (shock_df["initialTemp"].isin(selected_temp))
+    if selected_df == "warmup":
+        df =   warmp_up_df[
+              (warmp_up_df["zeta"].isin(selected_zeta))
+            & (warmp_up_df["final_temp"].isin(selected_finaltemp))
+            & (warmp_up_df["initialDens"].isin(selected_dens))
+            & (warmp_up_df["radfield"].isin(selected_rad))
+            & (warmp_up_df["initialTemp"].isin(selected_temp))
+            & (warmp_up_df["index"].isin(selected_mass))
+            & (warmp_up_df["cloud_radfield"].isin(selected_rad_parent))
         ]
     else:
-        df = postshock_df[
-            (postshock_df["zeta"].isin(selected_zeta))
-            & (postshock_df["shock_vel"].isin(selected_velocity))
-            & (postshock_df["initialDens"].isin(selected_dens))
-            & (postshock_df["radfield"].isin(selected_rad))
-            & (postshock_df["initialTemp"].isin(selected_temp))
+        df =   hotcore_df[
+              (hotcore_df["zeta"].isin(selected_zeta))
+            & (hotcore_df["final_temp"].isin(selected_finaltemp))
+            & (hotcore_df["initialDens"].isin(selected_dens))
+            & (hotcore_df["radfield"].isin(selected_rad))
+            & (hotcore_df["initialTemp"].isin(selected_temp))
+            & (hotcore_df["index"].isin(selected_mass))
+            & (hotcore_df["cloud_radfield"].isin(selected_rad_parent))
         ]
     
     # Calculate ratio
     df_ratio = df.copy()
     df_ratio['ratio'] = df_ratio[numerator] / df_ratio[denominator]
-    
+
     # Create ratio plot
     fig = px.scatter(
         df_ratio,
@@ -635,25 +679,25 @@ def update_ratio_plot(selected_df, numerator, denominator, selected_zeta, select
         hover_data={
             'age': True, 
             'locDens': True, 
-            'initialDens': True, 
-            'locTemp': True, 
+            'locTemp': True,
             'initialTemp': True, 
-            'shock_vel': True, 
-            'zeta_scaled': True, 
+            'index': True,
+            'zeta_scaled': True,
             'radfield': True,
+            'cloud_radfield': True,
             numerator: True,
-            denominator: True
+            denominator: True,
         },
         labels={
             'age': 'Time', 
             'ratio': f'{numerator}/{denominator}',
-            'locDens': 'n<sub>local</sub>', 
-            'initialDens': 'n<sub>initial</sub>', 
-            'locTemp': 'T<sub>local</sub>', 
-            'initialTemp': 'T<sub>init</sub>', 
-            'shock_vel': 'v<sub>s</sub>', 
+            'locDens': 'n<sub>H</sub>', 
+            'locTemp': 'T', 
+            'initialTemp': 'T<sub>init</sub>',
+            'index' : 'Mass index',
             'zeta': 'CRIR', 
-            'radfield': 'FUV'
+            'radfield': 'FUV',
+            'cloud_radfield': 'FUV<sub>parent cloud</sub>',
         }
     )
     
@@ -666,13 +710,13 @@ def update_ratio_plot(selected_df, numerator, denominator, selected_zeta, select
             'Time: %{x:.2e} yr<br>' +
             f'{numerator}: %{{customdata[7]:.2e}}<br>' +
             f'{denominator}: %{{customdata[8]:.2e}}<br>' +
-            'n<sub>local</sub>: %{customdata[0]:.2e}<br>' +
-            'n<sub>initial</sub>: %{customdata[1]:.0e}<br>' +
-            'T<sub>local</sub>: %{customdata[2]:.2f}<br>' +
-            'T<sub>init</sub>: %{customdata[3]}<br>' +
-            'v<sub>s</sub>: %{customdata[4]}<br>' +
-            'CRIR: %{customdata[5]:.2e}<br>' +
-            'FUV: %{customdata[6]:.0e}<br>'
+            'n<sub>H</sub>: %{customdata[0]:.2e}<br>' +
+            'T %{customdata[1]:.2f}<br>' +
+            'T<sub>init</sub>: %{customdata[2]}<br>' +
+            'Mass index: %{customdata[3]:.0f}<br>' +
+            'CRIR: %{customdata[4]:.2e}<br>' +
+            'FUV: %{customdata[5]:.0e}<br>' +
+            'FUV<sub>parent cloud</sub>: %{customdata[6]:.0e}<br>' 
         ),
     )
     
@@ -707,6 +751,7 @@ def update_ratio_plot(selected_df, numerator, denominator, selected_zeta, select
     
     return fig, validation_msg
 
+
 # Run the server
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(host='127.0.0.1', port='8050', debug=True)

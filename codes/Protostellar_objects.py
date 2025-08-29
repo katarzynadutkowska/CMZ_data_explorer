@@ -11,6 +11,7 @@ import plotly.express as px
 import numpy as np
 from functionality import format_molecule_HTML,ranges_hotcore, mol_all_gas, mol_all_bulk, mol_all_surface
 import datetime
+from pathlib import Path
 from config import *
 
 # Read the master dataframe from a pickle file
@@ -19,6 +20,9 @@ try:
         hotcore_df_pkl = pickle.load(file)
 except FileNotFoundError:
     pass
+
+root_folder = Path(__file__).resolve().parents[1]
+root_folder_str = str(root_folder)
 
 # Find the position of the 'zeta' column
 zeta_index = hotcore_df_pkl.columns.get_loc('zeta')
@@ -45,7 +49,7 @@ app.layout = html.Div(
     [
         html.H1("Protostellar Object Data Explorer 🔎"),
         html.P("Welcome to the interactive protostellar object data explorer! This tool provides access to the protostellar object grid tailored to environments similar to the Galactic Center. " \
-               "The models utilized the UCLCHEM gas-grain chemical code and are thoroughly described in Dutkowska et al. (submitted)."),
+               "The models utilized the UCLCHEM gas-grain chemical code and are thoroughly described in Dutkowska et al. 2025."),
         html.Div([
             html.H3("What you can do with this tool:", style={"margin-top": "20px", "margin-bottom": "10px"}),
             html.Ul([
@@ -750,4 +754,4 @@ def update_ratio_plot(selected_df, numerator, denominator, selected_zeta, select
 
 # Run the server
 if __name__ == '__main__':
-    app.run_server(host='127.0.0.1', port='8050', debug=True)
+    app.run(host='127.0.0.1', port='8050', debug=True)
