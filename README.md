@@ -56,8 +56,11 @@ pip install pandas
 
 ### 4. Launch the App
 
-Once everything is configured:
-
+Once everything is configured move to the folder where the codes are located:
+```
+cd codes
+```
+and then activate the app you need:
 ```
 python Shocks.py
 ```
