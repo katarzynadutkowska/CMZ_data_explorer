@@ -24,7 +24,7 @@ git clone https://github.com/YOUR_USERNAME/CMZ-data-explorer.git
 cd CMZ-data-explorer
 ```
 Alternatively, just download the zip through the **Code** button on the top of the repository, like so: 
-![How to save a zip file with the repository](./assets/Zip-file.png)
+![How to save a zip file with the repository](./codes/assets/Zip-file.png)
 
 ### 2. Define Your Paths
 
