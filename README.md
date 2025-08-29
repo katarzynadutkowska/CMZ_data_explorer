@@ -46,7 +46,7 @@ grid_path = f"/absolute/path/to/{grid_name}"
 
 ### 3. Set Up the Environment
 
-Replace `YOUR_ENV_NAME` with how your preffered (e.g., `cmz_app`). Please, **DO NOT FORGET** to *activate* your conda environment before installing anything (see below).
+I recommend using [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html) to deal with apps like this one. Replace `YOUR_ENV_NAME` with your preferred environment name (e.g., `cmz_app`). Please, **DO NOT FORGET** to *activate* your conda environment before installing anything (see below).
 ```bash
 conda create -n YOUR_ENV_NAME python=3.12
 conda activate YOUR_ENV_NAME  
