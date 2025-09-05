@@ -66,7 +66,7 @@ python Shocks.py
 ```
 or 
 ```
-python Protostellar_objets.py
+python Protostellar_objects.py
 ```
 The app will be available via a browser at `http://127.0.0.1:8050/` by default, but `http://localhost:8050/` should also work reliably.  
 To stop the app, press `CTRL+C` in the terminal where it's running.  
